@@ -92,3 +92,7 @@ Thumbs.db
 
 # Folder config file
 Desktop.ini
+
+# ncrunch
+*.ncrunchsolution
+*.ncrunchproject
