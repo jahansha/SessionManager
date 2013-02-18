@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SessionManager.MVC", "Sessi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SessionManager.MVC.Nuget", "SessionManager.MVC.Nuget\SessionManager.MVC.Nuget.csproj", "{4B03C2FC-5524-40A8-8787-E7626E80C2AD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SessionManager.Tests", "SessionManager.Tests\SessionManager.Tests.csproj", "{6461361D-32FB-4677-9142-306C7F535D2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{4B03C2FC-5524-40A8-8787-E7626E80C2AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B03C2FC-5524-40A8-8787-E7626E80C2AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B03C2FC-5524-40A8-8787-E7626E80C2AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6461361D-32FB-4677-9142-306C7F535D2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6461361D-32FB-4677-9142-306C7F535D2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6461361D-32FB-4677-9142-306C7F535D2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6461361D-32FB-4677-9142-306C7F535D2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

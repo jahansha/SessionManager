@@ -1,5 +1,6 @@
 ﻿using NHibernate;
 using NHibernate.Context;
+using System;
 
 namespace SessionManager
 {
@@ -14,6 +15,11 @@ namespace SessionManager
 
         public virtual void Commit()
         {
+            Commit(x => x.Dispose());
+        }
+
+        public virtual void Commit(Action<ISession> afterCommit)
+        {       
             var session = GetCurrentSession();
             
             if (session == null)
@@ -33,9 +39,9 @@ namespace SessionManager
 
             try
             {
-                session.Transaction.Commit();                
+                session.Transaction.Commit();
             }
-            catch(HibernateException)
+            catch (HibernateException)
             {
                 Rollback();
 
@@ -43,8 +49,14 @@ namespace SessionManager
 
                 throw;
             }
+
+            if (afterCommit != null)
+            {
+                afterCommit(session);
+            }
         }
 
+        // TODO: Research if the transaction should be disposed  
         public virtual void DisposeOfSession()
         {
             if (sessionFactory == null)
@@ -86,25 +98,35 @@ namespace SessionManager
             }
 
             session.Transaction.Rollback();
+
+            DisposeOfSession();
         }
 
         public virtual ISession GetCurrentSession()
         {
-            if (CurrentSessionContext.HasBind(sessionFactory))
-            {
-                return sessionFactory.GetCurrentSession();
-            }
-
-            return OpenSession();
+            return GetCurrentSession(x => {});
         }
 
-        protected virtual ISession OpenSession()
+        public virtual ISession GetCurrentSession(Action<ISession> sessionSetup)
         {
-            var session = sessionFactory.OpenSession();
+            ISession session = null;
 
-            session.BeginTransaction();
+            if (CurrentSessionContext.HasBind(sessionFactory))
+            {
+                session = sessionFactory.GetCurrentSession();
+            }
+            else
+            {
+                session = sessionFactory.OpenSession();
+                CurrentSessionContext.Bind(session);
+            }
 
-            CurrentSessionContext.Bind(session);
+            sessionSetup(session);
+
+            if (session.Transaction == null || !session.Transaction.IsActive)
+            {
+                session.BeginTransaction();
+            }
 
             return session;
         }
