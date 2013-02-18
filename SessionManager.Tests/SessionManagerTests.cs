@@ -46,7 +46,7 @@ namespace SessionManager.Tests
                 db.ConnectionStringName = "AppDb";
                 db.KeywordsAutoImport = Hbm2DDLKeyWords.AutoQuote;
                 db.SchemaAction = SchemaAutoAction.Update;
-               
+                db.ConnectionReleaseMode = ConnectionReleaseMode.OnClose;
             });
 
             cfg.AddMapping(domainMapping);
@@ -77,7 +77,7 @@ namespace SessionManager.Tests
         [Test]
         public void Can_Dispose_Of_Session()
         {
-            // arranage
+            // arrange
             var session = sessionManager.GetCurrentSession();
 
             var blog = new Blog() { Title = "This is a Blog!" };
