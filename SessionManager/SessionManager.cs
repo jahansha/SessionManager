@@ -55,8 +55,7 @@ namespace SessionManager
                 afterCommit(session);
             }
         }
-
-        // TODO: Research if the transaction should be disposed  
+ 
         public virtual void DisposeOfSession()
         {
             if (sessionFactory == null)
@@ -74,6 +73,11 @@ namespace SessionManager
             }
 
             session = CurrentSessionContext.Unbind(sessionFactory);
+
+            if (session.Transaction != null)
+            {
+                session.Transaction.Dispose();
+            }
 
             session.Dispose();            
         }
