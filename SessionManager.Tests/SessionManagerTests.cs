@@ -1,16 +1,14 @@
-﻿using NHibernate;
+﻿using FluentAssertions;
+using NHibernate;
 using NHibernate.Cfg;
+using NHibernate.Mapping.ByCode;
+using NHibernate.Mapping.ByCode.Conformist;
+using NHibernate.Tool.hbm2ddl;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
-using NHibernate.Mapping.ByCode.Conformist;
-using NHibernate.Mapping.ByCode;
 using System.Reflection;
-using NHibernate.Tool.hbm2ddl;
 
 namespace SessionManager.Tests
 {
