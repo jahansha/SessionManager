@@ -99,6 +99,25 @@ namespace SessionManager.Tests
         [Test]
         public void Can_Commit_Session()
         {
+            var session = sessionManager.GetCurrentSession();
+
+            var blog = new Blog() { Title = "This is a Blog!" };
+
+            session.Save(blog);
+
+            var transaction = session.Transaction;
+
+            sessionManager.Commit();
+
+            transaction.IsActive.Should().BeFalse();
+            transaction.WasCommitted.Should().BeTrue();
+            session.IsConnected.Should().BeFalse();
+            session.IsOpen.Should().BeFalse();
+        }
+
+        [Test]
+        public void Can_Commit_Session_And_Leave_It_Open()
+        {
             // arrange
             var session = sessionManager.GetCurrentSession();
             
