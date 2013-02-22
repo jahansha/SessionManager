@@ -20,7 +20,9 @@ namespace SessionManager
 
         public virtual void Commit(Action<ISession> afterCommit)
         {       
-            var session = GetCurrentSession();
+            var session = CurrentSessionContext.HasBind(sessionFactory) ? 
+                sessionFactory.GetCurrentSession() :
+                null;
             
             if (session == null)
             {
@@ -89,7 +91,9 @@ namespace SessionManager
                 return;
             }
 
-            var session = GetCurrentSession();
+            var session = CurrentSessionContext.HasBind(sessionFactory) ?
+                sessionFactory.GetCurrentSession() :
+                null;
 
             if (session.Transaction == null)
             {
