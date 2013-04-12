@@ -6,11 +6,11 @@ namespace SessionManager
 {
     public class SessionManager : ISessionManager
     {
-        protected readonly ISessionFactory sessionFactory;
+        protected readonly ISessionFactory SessionFactory;
         
         public SessionManager(ISessionFactory sessionFactory)
         {
-            this.sessionFactory = sessionFactory;
+            SessionFactory = sessionFactory;
         }
 
         public virtual void Commit()
@@ -20,8 +20,8 @@ namespace SessionManager
 
         public virtual void Commit(Action<ISession> afterCommit)
         {       
-            var session = CurrentSessionContext.HasBind(sessionFactory) ? 
-                sessionFactory.GetCurrentSession() :
+            var session = CurrentSessionContext.HasBind(SessionFactory) ? 
+                SessionFactory.GetCurrentSession() :
                 null;
             
             if (session == null)
@@ -60,13 +60,13 @@ namespace SessionManager
  
         public virtual void DisposeOfSession()
         {
-            if (sessionFactory == null)
+            if (SessionFactory == null)
             {
                 return;
             }
 
-            var session = CurrentSessionContext.HasBind(sessionFactory) ? 
-                sessionFactory.GetCurrentSession() :
+            var session = CurrentSessionContext.HasBind(SessionFactory) ? 
+                SessionFactory.GetCurrentSession() :
                 null;
 
             if (session == null)
@@ -74,7 +74,7 @@ namespace SessionManager
                 return;
             }
 
-            session = CurrentSessionContext.Unbind(sessionFactory);
+            session = CurrentSessionContext.Unbind(SessionFactory);
 
             if (session.Transaction != null)
             {
@@ -86,14 +86,19 @@ namespace SessionManager
 
         public virtual void Rollback()
         {
-            if (sessionFactory == null)
+            if (SessionFactory == null)
             {
                 return;
             }
 
-            var session = CurrentSessionContext.HasBind(sessionFactory) ?
-                sessionFactory.GetCurrentSession() :
+            var session = CurrentSessionContext.HasBind(SessionFactory) ?
+                SessionFactory.GetCurrentSession() :
                 null;
+
+            if (session == null)
+            {
+                return;
+            }
 
             if (session.Transaction == null)
             {
@@ -117,15 +122,15 @@ namespace SessionManager
 
         public virtual ISession GetCurrentSession(Action<ISession> sessionSetup)
         {
-            ISession session = null;
+            ISession session;
 
-            if (CurrentSessionContext.HasBind(sessionFactory))
+            if (CurrentSessionContext.HasBind(SessionFactory))
             {
-                session = sessionFactory.GetCurrentSession();
+                session = SessionFactory.GetCurrentSession();
             }
             else
             {
-                session = sessionFactory.OpenSession();
+                session = SessionFactory.OpenSession();
                 CurrentSessionContext.Bind(session);
             }
 

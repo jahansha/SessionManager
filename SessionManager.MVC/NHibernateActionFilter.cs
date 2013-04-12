@@ -1,5 +1,4 @@
-﻿using System;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 
 namespace SessionManager.MVC
 {
@@ -11,11 +10,11 @@ namespace SessionManager.MVC
     
     public class NHibernateActionFilter : ActionFilterAttribute
     {
-        private bool useSessionController = true;
-        private CommitOnType commitOn = CommitOnType.OnResultExecuted;
+        private bool _useSessionController = true;
+        private CommitOnType _commitOn = CommitOnType.OnResultExecuted;
 
-        public bool UseSessionController { get { return useSessionController; } set { useSessionController = value; } }
-        public CommitOnType CommitOn { get { return commitOn; } set { commitOn = value; } }
+        public bool UseSessionController { get { return _useSessionController; } set { _useSessionController = value; } }
+        public CommitOnType CommitOn { get { return _commitOn; } set { _commitOn = value; } }
         
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
@@ -27,20 +26,36 @@ namespace SessionManager.MVC
 
         public override void  OnActionExecuted(ActionExecutedContext filterContext)
         {
-            if (CommitOn == CommitOnType.OnActionExecuted)
+            if (CommitOn != CommitOnType.OnActionExecuted)
             {
-                var controllerContextWapper = new ControllerContextWrapper { ControllerContext = filterContext, Exception = filterContext.Exception, ExceptionHandled = filterContext.ExceptionHandled };
-                Commit(controllerContextWapper);
-            }  
+                return;
+            }
+
+            var controllerContextWapper = new ControllerContextWrapper
+                {
+                    ControllerContext = filterContext,
+                    Exception = filterContext.Exception,
+                    ExceptionHandled = filterContext.ExceptionHandled
+                };
+
+            Commit(controllerContextWapper);
         }
 
         public override void OnResultExecuted(ResultExecutedContext filterContext)
         {
-            if (CommitOn == CommitOnType.OnResultExecuted)
+            if (CommitOn != CommitOnType.OnResultExecuted)
             {
-                var controllerContextWapper = new ControllerContextWrapper { ControllerContext = filterContext, Exception = filterContext.Exception, ExceptionHandled = filterContext.ExceptionHandled };
-                Commit(controllerContextWapper);
+                return;
             }
+
+            var controllerContextWapper = new ControllerContextWrapper
+                {
+                    ControllerContext = filterContext,
+                    Exception = filterContext.Exception,
+                    ExceptionHandled = filterContext.ExceptionHandled
+                };
+
+            Commit(controllerContextWapper);
         }
 
         protected virtual void Commit(ControllerContextWrapper controllerContextWrapper)
@@ -94,13 +109,6 @@ namespace SessionManager.MVC
         protected virtual ISessionManager GetSessionManager()
         {
             return DependencyResolver.Current.GetService<ISessionManager>();
-        }
-
-        protected class ControllerContextWrapper
-        {
-            public ControllerContext ControllerContext { get; set; }
-            public Exception Exception { get; set; }
-            public bool ExceptionHandled { get; set; }
         }
     }
 }

@@ -14,9 +14,9 @@ namespace SessionManager.Tests
 {
     public class SessionManagerTests
     {
-        protected ISessionFactory sessionFactory;
-        protected SessionManager sessionManager;
-        protected Configuration cfg;
+        protected ISessionFactory SessionFactory;
+        protected SessionManager SessionManager;
+        protected Configuration Cfg;
         
         [TestFixtureSetUp]
         public void TestFixtureSetup()
@@ -33,12 +33,12 @@ namespace SessionManager.Tests
                 .GetExportedTypes()
                 .Where(x => x.Namespace == typeof(Blog).Namespace));
             
-            cfg = new Configuration();
+            Cfg = new Configuration();
 
-            cfg.DataBaseIntegration(db =>
+            Cfg.DataBaseIntegration(db =>
             {
-                db.Dialect<global::NHibernate.Dialect.SQLiteDialect>();
-                db.Driver<global::NHibernate.Driver.SQLite20Driver>();                
+                db.Dialect<NHibernate.Dialect.SQLiteDialect>();
+                db.Driver<NHibernate.Driver.SQLite20Driver>();                
                 db.LogSqlInConsole = true; 
                 db.LogFormattedSql = true;
                 db.ConnectionStringName = "AppDb";
@@ -47,23 +47,23 @@ namespace SessionManager.Tests
                 db.ConnectionReleaseMode = ConnectionReleaseMode.OnClose;
             });
 
-            cfg.AddMapping(domainMapping);
+            Cfg.AddMapping(domainMapping);
 
-            sessionFactory = cfg.CurrentSessionContext<NHibernate.Context.ThreadStaticSessionContext>().BuildSessionFactory();
-            sessionManager = new SessionManager(sessionFactory);
+            SessionFactory = Cfg.CurrentSessionContext<NHibernate.Context.ThreadStaticSessionContext>().BuildSessionFactory();
+            SessionManager = new SessionManager(SessionFactory);
         }
 
         [SetUp]
         public void Setup()
         {
-            new SchemaExport(cfg).Execute(true, true, false, sessionManager.GetCurrentSession().Connection, Console.Out);
+            new SchemaExport(Cfg).Execute(true, true, false, SessionManager.GetCurrentSession().Connection, Console.Out);
         }
 
         [Test]
         public void Can_Get_Currnet_Session()
         {
-            var session = sessionManager.GetCurrentSession();
-            var session2 = sessionManager.GetCurrentSession();
+            var session = SessionManager.GetCurrentSession();
+            var session2 = SessionManager.GetCurrentSession();
 
             session.Should().NotBeNull();
             session.IsOpen.Should().BeTrue();
@@ -76,16 +76,16 @@ namespace SessionManager.Tests
         public void Can_Dispose_Of_Session()
         {
             // arrange
-            var session = sessionManager.GetCurrentSession();
+            var session = SessionManager.GetCurrentSession();
 
-            var blog = new Blog() { Title = "This is a Blog!" };
+            var blog = new Blog { Title = "This is a Blog!" };
 
             session.Save(blog);
 
             var transaction = session.Transaction;
 
             // act
-            sessionManager.DisposeOfSession();
+            SessionManager.DisposeOfSession();
 
             // assert
             session.IsOpen.Should().BeFalse();
@@ -97,15 +97,15 @@ namespace SessionManager.Tests
         [Test]
         public void Can_Commit_Session()
         {
-            var session = sessionManager.GetCurrentSession();
+            var session = SessionManager.GetCurrentSession();
 
-            var blog = new Blog() { Title = "This is a Blog!" };
+            var blog = new Blog { Title = "This is a Blog!" };
 
             session.Save(blog);
 
             var transaction = session.Transaction;
 
-            sessionManager.Commit();
+            SessionManager.Commit();
 
             transaction.IsActive.Should().BeFalse();
             transaction.WasCommitted.Should().BeTrue();
@@ -117,25 +117,24 @@ namespace SessionManager.Tests
         public void Can_Commit_Session_And_Leave_It_Open()
         {
             // arrange
-            var session = sessionManager.GetCurrentSession();
+            var session = SessionManager.GetCurrentSession();
             
-            var blog = new Blog() { Title = "This is a Blog!" };
+            var blog = new Blog { Title = "This is a Blog!" };
             
             session.Save(blog);
 
             var transaction = session.Transaction;
 
             // act     
-            sessionManager.Commit(null);
+            SessionManager.Commit(null);
 
             var wasCommitted = transaction.WasCommitted;
-            transaction = null;
 
-            session = sessionManager.GetCurrentSession();
+            session = SessionManager.GetCurrentSession();
 
             var blogs = session.QueryOver<Blog>().List();
 
-            sessionManager.DisposeOfSession();
+            SessionManager.DisposeOfSession();
 
             // assert
             wasCommitted.Should().BeTrue();
@@ -149,9 +148,9 @@ namespace SessionManager.Tests
         [Test]
         public void Can_Rollback_Session()
         {
-            var session = sessionManager.GetCurrentSession();
+            var session = SessionManager.GetCurrentSession();
 
-            sessionManager.Rollback();
+            SessionManager.Rollback();
 
             session.IsOpen.Should().BeFalse();
             session.IsConnected.Should().BeFalse();
@@ -161,9 +160,9 @@ namespace SessionManager.Tests
         [Test]
         public void Can_Disconnect_On_Commit()
         {
-            var session = sessionManager.GetCurrentSession();
+            var session = SessionManager.GetCurrentSession();
 
-            sessionManager.Commit(x => x.Disconnect());
+            SessionManager.Commit(x => x.Disconnect());
 
             session.IsOpen.Should().BeTrue();
             session.IsConnected.Should().BeFalse();
@@ -172,11 +171,9 @@ namespace SessionManager.Tests
         [Test]
         public void Can_Reconnect_CurrentSession()
         {
-            var session = sessionManager.GetCurrentSession();
+            SessionManager.Commit(x => x.Disconnect());
 
-            sessionManager.Commit(x => x.Disconnect());
-
-            session = sessionManager.GetCurrentSession(x => x.Reconnect());
+            var session = SessionManager.GetCurrentSession(x => x.Reconnect());
 
             session.IsConnected.Should().BeTrue();
             session.IsOpen.Should().BeTrue();
@@ -185,13 +182,13 @@ namespace SessionManager.Tests
         [TearDown]
         public void TearDown()
         {
-            sessionManager.DisposeOfSession();
+            SessionManager.DisposeOfSession();
         }
 
         [TestFixtureTearDown]
         public void TestFixtureTearDown()
         {
-            sessionFactory.Dispose();
+            SessionFactory.Dispose();
         }
     }
 
@@ -213,9 +210,9 @@ namespace SessionManager.Tests
     {
         public BlogMapping()
         {
-            this.Id(x => x.Id, x => x.Generator(Generators.Identity));
-            this.Property(x => x.Title);
-            this.Bag(x => x.Posts, x => { }, x => x.OneToMany());
+            Id(x => x.Id, x => x.Generator(Generators.Identity));
+            Property(x => x.Title);
+            Bag(x => x.Posts, x => { }, x => x.OneToMany());
         }
     }
 
@@ -223,9 +220,9 @@ namespace SessionManager.Tests
     {
         public PostMapping()
         {
-            this.Id(x => x.Id, x => x.Generator(Generators.Identity));
-            this.Property(x => x.Body);
-            this.ManyToOne(x => x.Blog);
+            Id(x => x.Id, x => x.Generator(Generators.Identity));
+            Property(x => x.Body);
+            ManyToOne(x => x.Blog);
         }
     }
 }
