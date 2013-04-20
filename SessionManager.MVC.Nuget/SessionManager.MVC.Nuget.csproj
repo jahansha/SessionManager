@@ -7,7 +7,7 @@
     <ProjectGuid>{4B03C2FC-5524-40A8-8787-E7626E80C2AD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SessionManager.MVC.Nuget</RootNamespace>
+    <RootNamespace>SessionManager.Mvc.Nuget</RootNamespace>
     <AssemblyName>SessionManager.MVC.Nuget</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -74,15 +74,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="App_Start\RegisterSessionManagerMVC.cs" />
+    <Compile Include="App_Start\RegisterSessionManagerMvc.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SessionManager.MVC\SessionManager.MVC.csproj">
+    <ProjectReference Include="..\SessionManager.MVC\SessionManager.Mvc.csproj">
       <Project>{19ce5443-ece7-4dd9-bfc2-d3190eadc594}</Project>
-      <Name>SessionManager.MVC</Name>
+      <Name>SessionManager.Mvc</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

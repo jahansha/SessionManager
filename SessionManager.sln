@@ -10,9 +10,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{C699F4
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SessionManager.MVC", "SessionManager.MVC\SessionManager.MVC.csproj", "{19CE5443-ECE7-4DD9-BFC2-D3190EADC594}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SessionManager.Mvc", "SessionManager.MVC\SessionManager.Mvc.csproj", "{19CE5443-ECE7-4DD9-BFC2-D3190EADC594}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SessionManager.MVC.Nuget", "SessionManager.MVC.Nuget\SessionManager.MVC.Nuget.csproj", "{4B03C2FC-5524-40A8-8787-E7626E80C2AD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SessionManager.Mvc.Nuget", "SessionManager.MVC.Nuget\SessionManager.Mvc.Nuget.csproj", "{4B03C2FC-5524-40A8-8787-E7626E80C2AD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SessionManager.Tests", "SessionManager.Tests\SessionManager.Tests.csproj", "{6461361D-32FB-4677-9142-306C7F535D2B}"
 EndProject
