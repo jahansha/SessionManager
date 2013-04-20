@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web.Mvc;
 
-namespace SessionManager.MVC
+namespace SessionManager.Mvc
 {
     public class ControllerContextWrapper
     {

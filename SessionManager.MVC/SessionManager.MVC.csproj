@@ -7,8 +7,8 @@
     <ProjectGuid>{19CE5443-ECE7-4DD9-BFC2-D3190EADC594}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SessionManager.MVC</RootNamespace>
-    <AssemblyName>SessionManager.MVC</AssemblyName>
+    <RootNamespace>SessionManager.Mvc</RootNamespace>
+    <AssemblyName>SessionManager.Mvc</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

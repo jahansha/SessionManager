@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
 
-namespace SessionManager.MVC
+namespace SessionManager.Mvc
 {
     public class SessionManagerCleanupModule : IHttpModule
     {

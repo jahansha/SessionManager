@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 
-namespace SessionManager.MVC
+namespace SessionManager.Mvc
 {
     public enum CommitOnType
     {

@@ -1,9 +1,9 @@
 ﻿using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using System.Web.Mvc;
 
-[assembly: WebActivator.PreApplicationStartMethod(typeof(SessionManager.MVC.Nuget.App_Start.RegisterSessionManagerMvc), "PreStart")]
+[assembly: WebActivator.PreApplicationStartMethod(typeof(SessionManager.Mvc.Nuget.App_Start.RegisterSessionManagerMvc), "PreStart")]
 
-namespace SessionManager.MVC.Nuget.App_Start
+namespace SessionManager.Mvc.Nuget.App_Start
 {
     public static class RegisterSessionManagerMvc
     {
