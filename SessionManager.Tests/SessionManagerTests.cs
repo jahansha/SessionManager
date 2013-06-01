@@ -107,42 +107,10 @@ namespace SessionManager.Tests
 
             SessionManager.Commit();
 
+            session.IsOpen.Should().BeFalse();
+            session.IsConnected.Should().BeFalse();
             transaction.IsActive.Should().BeFalse();
-            transaction.WasCommitted.Should().BeTrue();
-            session.IsConnected.Should().BeFalse();
-            session.IsOpen.Should().BeFalse();
-        }
-
-        [Test]
-        public void Can_Commit_Session_And_Leave_It_Open()
-        {
-            // arrange
-            var session = SessionManager.GetCurrentSession();
-            
-            var blog = new Blog { Title = "This is a Blog!" };
-            
-            session.Save(blog);
-
-            var transaction = session.Transaction;
-
-            // act     
-            SessionManager.Commit(null);
-
-            var wasCommitted = transaction.WasCommitted;
-
-            session = SessionManager.GetCurrentSession();
-
-            var blogs = session.QueryOver<Blog>().List();
-
-            SessionManager.DisposeOfSession();
-
-            // assert
-            wasCommitted.Should().BeTrue();
-            blogs.Count.Should().Be(1);
-
-            session.IsOpen.Should().BeFalse();
-            session.IsConnected.Should().BeFalse();
-            session.Transaction.IsActive.Should().BeFalse();
+            transaction.WasCommitted.Should().BeTrue();      
         }
 
         [Test]
@@ -155,28 +123,6 @@ namespace SessionManager.Tests
             session.IsOpen.Should().BeFalse();
             session.IsConnected.Should().BeFalse();
             session.Transaction.IsActive.Should().BeFalse();
-        }
-
-        [Test]
-        public void Can_Disconnect_On_Commit()
-        {
-            var session = SessionManager.GetCurrentSession();
-
-            SessionManager.Commit(x => x.Disconnect());
-
-            session.IsOpen.Should().BeTrue();
-            session.IsConnected.Should().BeFalse();
-        }
-
-        [Test]
-        public void Can_Reconnect_CurrentSession()
-        {
-            SessionManager.Commit(x => x.Disconnect());
-
-            var session = SessionManager.GetCurrentSession(x => x.Reconnect());
-
-            session.IsConnected.Should().BeTrue();
-            session.IsOpen.Should().BeTrue();
         }
 
         [TearDown]

@@ -1,29 +1,29 @@
-﻿using NHibernate;
+﻿using System.Data;
+using NHibernate;
 using NHibernate.Context;
-using System;
 
 namespace SessionManager
 {
     public class SessionManager : ISessionManager
     {
-        protected readonly ISessionFactory SessionFactory;
+        private readonly ISessionFactory _sessionFactory;
         
         public SessionManager(ISessionFactory sessionFactory)
         {
-            SessionFactory = sessionFactory;
+            _sessionFactory = sessionFactory;
         }
 
         public virtual void Commit()
         {
-            Commit(x => x.Dispose());
-        }
-
-        public virtual void Commit(Action<ISession> afterCommit)
-        {       
-            var session = CurrentSessionContext.HasBind(SessionFactory) ? 
-                SessionFactory.GetCurrentSession() :
+            var session = CurrentSessionContext.HasBind(_sessionFactory) ?
+                _sessionFactory.GetCurrentSession() :
                 null;
             
+            Commit(session);
+        }
+
+        public virtual void Commit(ISession session)
+        {      
             if (session == null)
             {
                 return;
@@ -47,34 +47,29 @@ namespace SessionManager
             {
                 Rollback();
 
-                DisposeOfSession();
-
                 throw;
             }
-
-            if (afterCommit != null)
+            finally
             {
-                afterCommit(session);
+                DisposeOfSession();
             }
         }
- 
+
         public virtual void DisposeOfSession()
         {
-            if (SessionFactory == null)
-            {
-                return;
-            }
-
-            var session = CurrentSessionContext.HasBind(SessionFactory) ? 
-                SessionFactory.GetCurrentSession() :
+            var session = CurrentSessionContext.HasBind(_sessionFactory) ?
+                CurrentSessionContext.Unbind(_sessionFactory) :
                 null;
 
+            DisposeOfSession(session);
+        }
+ 
+        public virtual void DisposeOfSession(ISession session)
+        {
             if (session == null)
             {
                 return;
             }
-
-            session = CurrentSessionContext.Unbind(SessionFactory);
 
             if (session.Transaction != null)
             {
@@ -86,15 +81,15 @@ namespace SessionManager
 
         public virtual void Rollback()
         {
-            if (SessionFactory == null)
-            {
-                return;
-            }
-
-            var session = CurrentSessionContext.HasBind(SessionFactory) ?
-                SessionFactory.GetCurrentSession() :
+            var session = CurrentSessionContext.HasBind(_sessionFactory) ?
+                _sessionFactory.GetCurrentSession() :
                 null;
 
+            Rollback(session);
+        }
+
+        public virtual void Rollback(ISession session)
+        {
             if (session == null)
             {
                 return;
@@ -112,34 +107,31 @@ namespace SessionManager
 
             session.Transaction.Rollback();
 
-            DisposeOfSession();
+            DisposeOfSession(session);
         }
 
         public virtual ISession GetCurrentSession()
         {
-            return GetCurrentSession(x => {});
-        }
-
-        public virtual ISession GetCurrentSession(Action<ISession> sessionSetup)
-        {
             ISession session;
 
-            if (CurrentSessionContext.HasBind(SessionFactory))
+            if (CurrentSessionContext.HasBind(_sessionFactory))
             {
-                session = SessionFactory.GetCurrentSession();
+                session = _sessionFactory.GetCurrentSession();
             }
             else
             {
-                session = SessionFactory.OpenSession();
+                session = OpenSession(IsolationLevel.Unspecified);
                 CurrentSessionContext.Bind(session);
             }
 
-            sessionSetup(session);
+            return session;
+        }
 
-            if (session.Transaction == null || !session.Transaction.IsActive)
-            {
-                session.BeginTransaction();
-            }
+        public virtual ISession OpenSession(IsolationLevel isolationLevel)
+        {
+            var session = _sessionFactory.OpenSession();
+
+            session.BeginTransaction(isolationLevel);
 
             return session;
         }

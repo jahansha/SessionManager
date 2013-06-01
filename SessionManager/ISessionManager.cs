@@ -1,15 +1,17 @@
-﻿using NHibernate;
-using System;
+﻿using System.Data;
+using NHibernate;
 
 namespace SessionManager
 {   
     public interface ISessionManager
     {
         ISession GetCurrentSession();
-        ISession GetCurrentSession(Action<ISession> sessionSetup);
         void Commit();
-        void Commit(Action<ISession> afterCommit);
+        void Commit(ISession session);
         void DisposeOfSession();
-        void Rollback();        
+        void DisposeOfSession(ISession session);
+        void Rollback();
+        void Rollback(ISession session);
+        ISession OpenSession(IsolationLevel isolationLevel);
     }
 }
