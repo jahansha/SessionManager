@@ -45,13 +45,13 @@ namespace SessionManager
             }
             catch (HibernateException)
             {
-                Rollback();
+                Rollback(session);
 
                 throw;
             }
             finally
             {
-                DisposeOfSession();
+                DisposeOfSession(session);
             }
         }
 
