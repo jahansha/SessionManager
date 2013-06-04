@@ -23,18 +23,8 @@ namespace SessionManager
         }
 
         public virtual void Commit(ISession session)
-        {      
-            if (session == null)
-            {
-                return;
-            }
-
-            if (session.Transaction == null)
-            {
-                return;
-            }
-
-            if (!session.Transaction.IsActive)
+        {
+            if (!CanCommitSession(session))
             {
                 return;
             }
@@ -66,14 +56,9 @@ namespace SessionManager
  
         public virtual void DisposeOfSession(ISession session)
         {
-            if (session == null)
+            if (!CanDisposeOfSession(session))
             {
                 return;
-            }
-
-            if (session.Transaction != null)
-            {
-                session.Transaction.Dispose();
             }
 
             session.Dispose();            
@@ -90,17 +75,7 @@ namespace SessionManager
 
         public virtual void Rollback(ISession session)
         {
-            if (session == null)
-            {
-                return;
-            }
-
-            if (session.Transaction == null)
-            {
-                return;
-            }
-
-            if (!session.Transaction.IsActive)
+            if (!CanRollbackSession(session))
             {
                 return;
             }
@@ -134,6 +109,21 @@ namespace SessionManager
             session.BeginTransaction(isolationLevel);
 
             return session;
+        }
+
+        protected virtual bool CanCommitSession(ISession session)
+        {
+            return session != null && session.Transaction != null && session.Transaction.IsActive;
+        }
+
+        protected virtual bool CanDisposeOfSession(ISession session)
+        {
+            return session != null && session.Transaction != null;
+        }
+
+        protected virtual bool CanRollbackSession(ISession session)
+        {
+            return CanCommitSession(session);
         }
     }
 }
