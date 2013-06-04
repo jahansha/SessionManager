@@ -8,19 +8,14 @@ namespace SessionManager.Mvc
 {
     public class SessionManagerCleanupModule : IHttpModule
     {
-        private HttpApplication _httpApplication;
-
         public void Init(HttpApplication context)
         {
-            _httpApplication = context;
             context.EndRequest += ContextEndRequest;
             context.Error += ContextError;
         }
 
         public void Dispose()
         {
-            _httpApplication.EndRequest -= ContextEndRequest;
-            _httpApplication.Error -= ContextError;
         }
 
         private void ContextEndRequest(object sender, EventArgs e)
