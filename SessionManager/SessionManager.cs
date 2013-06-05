@@ -85,6 +85,11 @@ namespace SessionManager
             DisposeOfSession(session);
         }
 
+        /// <summary>
+        /// Gets the current contextual session.  If a session is not bound to the current session context 
+        /// then a session is opened with an isolation level of unspecified and then bound to the current session context.
+        /// </summary>
+        /// <returns>The current contextual session</returns>
         public virtual ISession GetCurrentSession()
         {
             ISession session;
@@ -102,6 +107,12 @@ namespace SessionManager
             return session;
         }
 
+        /// <summary>
+        /// Opens a new session with the specified isolation level that is not associated with the current session context.
+        /// You must Comit, Rollback and Disopose of the session.
+        /// </summary>
+        /// <param name="isolationLevel">The isolation level for the session.</param>
+        /// <returns>A new session.</returns>
         public virtual ISession OpenSession(IsolationLevel isolationLevel)
         {
             var session = _sessionFactory.OpenSession();
